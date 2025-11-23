@@ -1,0 +1,37 @@
+# FastAPI Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic
+pydantic-settings
+
+# LangChain Core (for conversation history management)
+langchain
+langchain-core
+langchain-community
+
+# Model Integration (Person 2 will use these)
+# Uncomment based on chosen approach:
+
+# Option 1: HuggingFace Transformers (Recommended)
+# transformers==4.36.2
+# torch==2.1.2
+# accelerate==0.25.0
+
+# Option 2: Ollama
+# ollama==0.1.6
+
+# Utilities
+python-multipart
+python-dotenv
+
+# Logging and Monitoring
+loguru
+
+# Testing (optional for Person 3)
+pytest
+pytest-asyncio
+httpx
+
+# Development Tools
+black
+flake8
