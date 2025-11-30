@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     API_VERSION: str = "1.0.0"
     
     # Model Settings
-    MODEL_NAME: str = "loaimo/qwen-world-history"
+    MODEL_NAME: str = "./qwen-world-history"
     MODEL_DEVICE: str = "cpu"  # "cuda" for GPU, "cpu" for CPU
     TEMPERATURE: float = 0.7
     MAX_TOKENS: int = 512

@@ -12,13 +12,11 @@ langchain-community
 # Model Integration (Person 2 will use these)
 # Uncomment based on chosen approach:
 
-# Option 1: HuggingFace Transformers (Recommended)
-# transformers==4.36.2
-# torch==2.1.2
-# accelerate==0.25.0
+transformers
+torch
+accelerate==0.25.0
 
-# Option 2: Ollama
-# ollama==0.1.6
+
 
 # Utilities
 python-multipart
@@ -37,4 +35,4 @@ black
 flake8
 
 bitsandbytes==0.41.3
-accelerate==0.25.0
+HuggingFace_hub

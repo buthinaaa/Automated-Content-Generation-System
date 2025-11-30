@@ -7,7 +7,7 @@ import os
 from typing import Dict, List
 import logging
 from datetime import datetime
-
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
 # Setup logging first
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -124,28 +124,29 @@ class ChatService:
     
     def _load_model(self):
         """
-        Load Fine-tuned Qwen Model
-        SIMPLE VERSION - No quantization needed for CPU
+        Load Fine-tuned Qwen Model from LOCAL directory
+        FINAL WORKING VERSION - Handles 8-bit quantization
         """
         try:
             model_name = settings.MODEL_NAME
             logger.info(f"📥 Loading model: {model_name}")
-            logger.info("⏳ This may take 3-5 minutes on first run...")
+            logger.info("⏳ This may take 1-2 minutes...")
             
-            # Check if model path exists (for local models)
-            if os.path.exists(model_name):
-                logger.info(f"✅ Found local model at: {model_name}")
-                use_local = True
-            else:
-                logger.info(f"📡 Will download from HuggingFace: {model_name}")
-                use_local = False
+            # Check if model path exists
+            if not os.path.exists(model_name):
+                raise FileNotFoundError(
+                    f"Model not found at: {model_name}\n"
+                    f"Make sure the model folder exists with config.json and model files"
+                )
+            
+            logger.info(f"✅ Found local model at: {model_name}")
             
             # STEP 1: Load tokenizer
             logger.info("🔤 Step 1/2: Loading tokenizer...")
             self.tokenizer = AutoTokenizer.from_pretrained(
                 model_name,
                 trust_remote_code=True,
-                local_files_only=use_local
+                local_files_only=True
             )
             
             # Set padding token
@@ -155,22 +156,21 @@ class ChatService:
             
             logger.info("✅ Tokenizer loaded successfully")
             
-            # STEP 2: Load model (simple, no quantization)
+            # STEP 2: Load model (8-bit quantized)
             logger.info("🤖 Step 2/2: Loading model...")
-            logger.info(f"   Device: {self.device}")
+            logger.info(f"   Target device: {self.device}")
+            logger.info("   Model is 8-bit quantized (will load automatically)")
             
-            # Simple loading - works on both CPU and GPU
             self.model = AutoModelForCausalLM.from_pretrained(
                 model_name,
-                torch_dtype=torch.float32,  # Use float32 for CPU
                 trust_remote_code=True,
                 low_cpu_mem_usage=True,
-                local_files_only=use_local
+                local_files_only=True
+                # device_map and dtype handled automatically for quantized models
             )
             
-            # Move to device
-            logger.info(f"📦 Moving model to {self.device}...")
-            self.model = self.model.to(self.device)
+            # DON'T call .to() for quantized models - they handle device themselves
+            logger.info(f"✅ Model loaded successfully (8-bit quantized)")
             
             # Set to evaluation mode
             self.model.eval()
@@ -178,11 +178,14 @@ class ChatService:
             # Calculate model stats
             param_count = sum(p.numel() for p in self.model.parameters())
             
-            logger.info("✅ Model loaded successfully!")
+            logger.info("✅ Model ready for inference!")
             logger.info(f"📊 Model stats:")
             logger.info(f"   Parameters: {param_count:,} ({param_count/1e9:.2f}B)")
-            logger.info(f"   Device: {next(self.model.parameters()).device}")
-            logger.info(f"   Dtype: {next(self.model.parameters()).dtype}")
+            try:
+                logger.info(f"   Device: {next(self.model.parameters()).device}")
+                logger.info(f"   Dtype: {next(self.model.parameters()).dtype}")
+            except:
+                logger.info(f"   Device: Multiple (8-bit uses special placement)")
             
             self.model_loaded = True
             
@@ -190,16 +193,22 @@ class ChatService:
             logger.error("="*70)
             logger.error("❌ MODEL LOADING FAILED")
             logger.error(f"Error: {str(e)}")
+            
+            import traceback
+            logger.error("Full error traceback:")
+            logger.error(traceback.format_exc())
+            
             logger.error("="*70)
             logger.error("💡 Troubleshooting tips:")
-            logger.error("   1. Check internet connection (first download)")
-            logger.error("   2. Ensure ~6GB free disk space")
-            logger.error("   3. Try: pip install --upgrade transformers torch")
-            logger.error(f"   4. Your MODEL_NAME: {settings.MODEL_NAME}")
+            logger.error(f"   1. Check model path exists: {settings.MODEL_NAME}")
+            logger.error("   2. Ensure bitsandbytes is installed: pip install bitsandbytes")
+            logger.error("   3. Ensure model files (*.safetensors or *.bin) are present")
+            logger.error("   4. Check you have ~4GB free RAM (8-bit saves memory)")
             logger.error("="*70)
             self.model_loaded = False
             raise
-    
+
+
     def is_model_loaded(self) -> bool:
         """Check if model is ready"""
         return self.model_loaded and self.model is not None
