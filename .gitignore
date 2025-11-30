@@ -1,1 +1,3 @@
 .env
+qwen-world-history/
+*.safetensors
