@@ -11,11 +11,11 @@ class Settings(BaseSettings):
     """
     
     # API Settings
-    API_TITLE: str = "Gemma Chatbot API"
+    API_TITLE: str = "Qwen Chatbot API"
     API_VERSION: str = "1.0.0"
     
     # Model Settings
-    MODEL_NAME: str = "google/gemma-3-1b-it"
+    MODEL_NAME: str = "loaimo/qwen-world-history"
     MODEL_DEVICE: str = "cpu"  # "cuda" for GPU, "cpu" for CPU
     TEMPERATURE: float = 0.7
     MAX_TOKENS: int = 512

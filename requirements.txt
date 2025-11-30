@@ -35,3 +35,6 @@ httpx
 # Development Tools
 black
 flake8
+
+bitsandbytes==0.41.3
+accelerate==0.25.0
