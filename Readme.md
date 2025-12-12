@@ -25,8 +25,6 @@ This project is an intelligent chatbot that can answer questions about world his
 
 **Model:** Fine-tuned version of `Qwen/Qwen2.5-1.5B-Instruct` on world history dataset  
 **Deployment:** Local deployment with FastAPI backend and vanilla JavaScript frontend  
-**Optimization:** 8-bit quantization for efficient CPU inference
-
 ---
 
 ## ✨ Features
@@ -61,7 +59,7 @@ This project is an intelligent chatbot that can answer questions about world his
 ### Step 1: Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/buthinaaa/Automated-Content-Generation-System
 cd DEFI-project
 ```
 
@@ -89,7 +87,6 @@ pip install -r requirements.txt
 - FastAPI & Uvicorn (API server)
 - Transformers (Model loading)
 - PyTorch (ML framework)
-- bitsandbytes (8-bit quantization)
 - LangChain (Conversation management)
 
 ### Step 4: Download the Fine-tuned Model
@@ -365,7 +362,6 @@ DEFI-project/
 ### 1. Model Fine-tuning
 - **Base Model**: Qwen/Qwen2.5-1.5B-Instruct (1.5 billion parameters)
 - **Fine-tuning**: Trained on world history dataset from HuggingFace
-- **Optimization**: 8-bit quantization for efficient CPU inference
 - **Result**: Specialized chatbot for historical questions
 
 ### 2. Backend Development (FastAPI)
@@ -373,7 +369,6 @@ DEFI-project/
 - **Request Validation**: Pydantic models for type safety
 - **Error Handling**: Comprehensive error messages and logging
 - **Session Management**: In-memory storage for conversation history
-- **Model Integration**: 8-bit quantized model loading with bitsandbytes
 
 ### 3. Frontend Development
 - **Simple UI**: Clean, responsive chat interface
@@ -383,7 +378,6 @@ DEFI-project/
 
 ### 4. Key Technical Achievements
 - ✅ Successfully loaded 1.5B parameter model on CPU
-- ✅ Implemented 8-bit quantization for memory efficiency
 - ✅ Built complete REST API with FastAPI
 - ✅ Created conversation history management
 - ✅ Deployed locally with simple frontend
@@ -392,21 +386,6 @@ DEFI-project/
 
 ## 🐛 Troubleshooting
 
-### Problem: Model fails to load
-
-**Error:** `Model loading failed` or `bitsandbytes error`
-
-**Solution:**
-```bash
-# Make sure bitsandbytes is installed
-pip install bitsandbytes accelerate
-
-# Verify model files exist
-ls qwen-world-history/
-# Should show: config.json, model.safetensors, tokenizer files
-```
-
----
 
 ### Problem: Backend won't start
 
@@ -436,17 +415,6 @@ uvicorn backend.main:app --port 8001
 
 ---
 
-### Problem: Slow responses
-
-**Cause:** CPU inference is slower than GPU
-
-**Solutions:**
-- ✅ Already using 8-bit quantization (fastest CPU option)
-- ✅ Reduce `MAX_TOKENS` in `.env` to 256 or 128
-- ✅ Close other applications to free RAM
-- ✅ This is expected behavior on CPU
-
----
 
 ### Problem: Out of memory
 
@@ -470,7 +438,6 @@ MAX_TOKENS=256
 - **Uvicorn** - ASGI server
 - **Transformers** - HuggingFace model loading
 - **PyTorch** - Deep learning framework
-- **bitsandbytes** - 8-bit quantization
 - **LangChain** - Conversation history management
 - **Pydantic** - Data validation
 
@@ -483,7 +450,6 @@ MAX_TOKENS=256
 ### Model
 - **Qwen2.5-1.5B-Instruct** - Base model
 - **Fine-tuned** on world history dataset
-- **8-bit quantization** for CPU efficiency
 
 ---
 
@@ -510,42 +476,9 @@ This project demonstrates:
 
 ---
 
-## 🚀 Future Improvements
-
-Potential enhancements:
-- [ ] Add authentication and user accounts
-- [ ] Persistent storage (database for sessions)
-- [ ] Streaming responses (word-by-word generation)
-- [ ] Better error messages in UI
-- [ ] Mobile-responsive design improvements
-- [ ] Deploy to cloud (AWS/GCP/Azure)
-- [ ] Add citation system (show sources)
-- [ ] Multi-language support
-
----
-
 ## 📄 License
 
 This project is for educational purposes as part of the DEPI course.
-
----
-
-## 🙏 Acknowledgments
-
-- **DEPI Course** - For the learning opportunity
-- **HuggingFace** - For the model and dataset hosting
-- **Qwen Team** - For the excellent base model
-- **FastAPI Team** - For the amazing framework
-
----
-
-## 📞 Support
-
-If you encounter issues:
-1. Check the [Troubleshooting](#troubleshooting) section
-2. Verify all prerequisites are met
-3. Check that both servers are running
-4. Look at backend logs for detailed error messages
 
 ---
 
